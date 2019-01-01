@@ -22,17 +22,11 @@ LOGGING = {
     },
 }
 
-# for mysql
-pymysql.install_as_MySQLdb()
-
 # DB configuration
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL', default="sqlite:///db.sqlite3")
     )
-}
-DATABASES["default"]["OPTIONS"] = {
-    'charset': 'utf8mb4'
 }
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=["*"], cast=Csv())
