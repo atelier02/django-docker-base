@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+
+  web:
+    build: ./api
+    container_name: deploytest.backend
+    ports:
+      - 8888:8888
+    environment:
+      - PORT=8888
+    volumes:
+      - ./api:/opt/backend

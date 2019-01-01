@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  web:
+    build: ./api
+    container_name: backend
+    command: django-admin.py startproject main .
+    volumes:
+      - ./api:/opt/backend
+    ports:
+      - "8888:8888"

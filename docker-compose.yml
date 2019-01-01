@@ -1,0 +1,46 @@
+version: '3'
+
+volumes:
+  deploybase.db.volume:
+
+services:
+
+  nginx:
+    build: ./nginx
+    container_name: deploybase.nginx
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
+      - ./api/static:/static
+    depends_on:
+      - backend
+    restart: always
+
+  db:
+    image: mysql:5.7
+    container_name: deploybase.mysqldb
+    ports:
+      - 3306:3306
+    env_file:
+      - ./sql/.env_db
+    volumes:
+      - deploybase.db.volume:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    restart: always
+
+  backend:
+    build: ./api
+    container_name: deploybase.backend
+    command: python manage.py runserver 0.0.0.0:8001
+    ports:
+      - 8001:8001
+    environment:
+      - PORT=8001
+      - DJANGO_SETTINGS_MODULE=main.settings_development
+    volumes:
+      - ./api:/opt/backend
+    depends_on:
+      - db
+    restart: always
